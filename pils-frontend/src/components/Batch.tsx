@@ -27,7 +27,7 @@ export const Batch = ({batch}: BatchProps) => {
                     }} />
                     <YAxis allowDecimals domain={['dataMin', 'dataMax']}  />
                     <Tooltip />
-                    <Line type="monotone" dataKey="temp" stroke="#ffe064" strokeWidth={3} />
+                    <Line type="monotone" dataKey="temp" stroke="#82ca9d" strokeWidth={3} />
                 </LineChart>
             </ResponsiveContainer>
             <div>
