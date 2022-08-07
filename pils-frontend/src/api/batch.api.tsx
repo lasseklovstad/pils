@@ -26,7 +26,8 @@ export const useGetBatches = () => {
 }
 
 export const useGetBatch = (batchId: string) => {
-    return useQuery<IBatchDetailed>(["batch", batchId], () => fetch(`/api/batch/${batchId}`).then(r => r.json()))
+    return useQuery<IBatchDetailed>(["batch", batchId], () =>
+        fetch(`/api/batch/${batchId}`).then(r => r.json()), { refetchInterval: 10000 })
 }
 
 export const useGetDatabaseSize = () => {
