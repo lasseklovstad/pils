@@ -7,7 +7,9 @@ import java.util.*
 class BatchDetailed(
     var id: UUID?,
     var name: String,
-    var temperatureData: List<Temperature>
+    var temperatureData: List<Temperature>,
+    var createdDate: Date,
+    var controllerTemperature: Float
 ) {
-    constructor(batch: Batch) : this(batch.id, batch.name, batch.temperatureData)
+    constructor(batch: Batch) : this(batch.id, batch.name, batch.temperatureData, batch.createdDate, batch.controllerTemperature)
 }

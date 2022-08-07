@@ -6,10 +6,7 @@ import no.web.pils.model.Batch
 import no.web.pils.repository.BatchRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.UUID
 
@@ -25,8 +22,13 @@ class BatchController {
         return batchRepository.findAll().map { BatchSimple(it) }
     }
 
+    @GetMapping("databasesize")
+    fun getDatabaseSize(): String {
+        return batchRepository.getDatabaseSize()
+    }
+
     @GetMapping("{id}")
-    fun getBatch(@RequestParam id:String): BatchDetailed {
+    fun getBatch(@PathVariable id:String): BatchDetailed {
         val batch = batchRepository.findById(UUID.fromString(id));
         if(batch.isPresent){
             return BatchDetailed(batch.get())

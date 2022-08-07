@@ -13,7 +13,8 @@ class Batch(
     @OneToMany(mappedBy = "batch")
     @JsonIgnore
     var temperatureData: List<Temperature>,
-    var controllerTemperature: Float
+    var controllerTemperature: Float,
+    var createdDate: Date
 ) {
-    constructor() : this(null, "New batch", emptyList(), 20F)
+    constructor() : this(null, "New batch", emptyList(), 20F, Date())
 }

@@ -6,7 +6,8 @@ import java.util.*
 
 class BatchSimple(
     var id: UUID?,
-    var name: String
+    var name: String,
+    var createdDate: Date
 ){
-    constructor(batch: Batch) : this(batch.id, batch.name)
+    constructor(batch: Batch) : this(batch.id, batch.name, batch.createdDate)
 }

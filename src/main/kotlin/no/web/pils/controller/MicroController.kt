@@ -6,12 +6,7 @@ import no.web.pils.repository.BatchRepository
 import no.web.pils.repository.TemperatureRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.UUID
 import javax.websocket.server.PathParam
@@ -28,7 +23,7 @@ class MicroController {
 
     @PostMapping("{batchId}/temperature")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun postColdTemperatur(@RequestBody body:String, @RequestParam batchId: String){
+    fun postColdTemperatur(@RequestBody body:String, @PathVariable batchId: String){
         val batch = batchRepository.findById(UUID.fromString(batchId))
         if(batch.isPresent){
             val temperatureValue = body.toFloat()
