@@ -6,11 +6,11 @@ type BatchProps = {
 }
 
 export const Batch = ({batch}: BatchProps) => {
-    const data = batch.temperatureData.map(batch=>({temp: batch.temperature, date: batch.date}))
-    console.log(data)
+    const data = batch.temperatureData.map(batch=>({temp: batch.temperature, date: batch.date})).filter(dataPoint=>dataPoint.temp>-50 && dataPoint.temp<80)
+
     return <div >
 
-        <div className="h-[600px] h-[600px] p-2">
+        <div className="md:h-[600px] sm:h-[400px] p-2">
             <ResponsiveContainer>
                 <LineChart
                     data={data}
