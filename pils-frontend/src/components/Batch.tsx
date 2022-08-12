@@ -50,7 +50,7 @@ export const Batch = ({batch}: BatchProps) => {
                 <div>Kontroller temperatur: {batch.controllerTemperature} C</div>
                 <div>Antall målinger: {batch.temperatureData.length}</div>
                 <div>Antall restarter: {batch.numberOfRestarts}</div>
-                <div>{batch.active ? "Batch er aktiv": "Batch er inaktiv"}</div>
+                <div>{batch.active ? "Batch er aktiv" : "Batch er inaktiv"}</div>
                 <Button onClick={() => mutate()}>Sett inaktive</Button>
             </div>
         </div>
