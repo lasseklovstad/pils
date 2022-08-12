@@ -1,6 +1,7 @@
 package no.web.pils.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.annotations.ColumnDefault
 import java.util.*
 import javax.persistence.*
 
@@ -14,7 +15,9 @@ class Batch(
     @JsonIgnore
     var temperatureData: List<Temperature>,
     var controllerTemperature: Float,
-    var createdDate: Date
+    var createdDate: Date,
+    var active: Boolean,
+    var numberOfRestarts: Int
 ) {
-    constructor() : this(null, "New batch", emptyList(), 20F, Date())
+    constructor() : this(null, "New batch", emptyList(), 20F, Date(), true, 0)
 }

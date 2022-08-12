@@ -1,4 +1,4 @@
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
 export interface IBatch {
     id: string
@@ -13,6 +13,8 @@ export interface IBatchDetailed {
     controllerTemperature: number
     createdDate: string
     temperatureData: ITemperature[]
+    active: boolean;
+    numberOfRestarts: number;
 }
 
 export interface ITemperature {
@@ -27,7 +29,17 @@ export const useGetBatches = () => {
 
 export const useGetBatch = (batchId: string) => {
     return useQuery<IBatchDetailed>(["batch", batchId], () =>
-        fetch(`/api/batch/${batchId}`).then(r => r.json()), { refetchInterval: 10000 })
+        fetch(`/api/batch/${batchId}`).then(r => r.json()), {refetchInterval: 10000})
+}
+
+export const usePostBatchNotActive = (batchId: string) => {
+    const queryClient = useQueryClient();
+    return useMutation<IBatchDetailed>(["batch", batchId], () =>
+        fetch(`/api/batch/${batchId}/notactive`, {method: "POST"}).then(r => r.json()), {
+        onSuccess: (data) => {
+            queryClient.setQueriesData(["batch", batchId], () => data)
+        }
+    })
 }
 
 export const useGetDatabaseSize = () => {

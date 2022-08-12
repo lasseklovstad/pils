@@ -1,5 +1,6 @@
 package no.web.pils.repository
 
+import no.web.pils.controller.dtoOut.BatchDetailed
 import no.web.pils.model.Batch
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query

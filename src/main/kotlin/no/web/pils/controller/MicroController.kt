@@ -23,12 +23,38 @@ class MicroController {
 
     @PostMapping("{batchId}/temperature")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun postColdTemperatur(@RequestBody body:String, @PathVariable batchId: String){
+    fun postColdTemperatur(@RequestBody body: String, @PathVariable batchId: String) {
         val batch = batchRepository.findById(UUID.fromString(batchId))
-        if(batch.isPresent){
+        if (batch.isPresent) {
             val temperatureValue = body.toFloat()
             val temp = Temperature(temperatureValue, batch.get())
             temperatureRepository.save(temp)
+            return;
+        }
+        throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
+    }
+
+    @GetMapping("{batchId}/active")
+    fun getIsBatchActive(@PathVariable batchId: String): String {
+        val batch = batchRepository.findById(UUID.fromString(batchId))
+        if (batch.isPresent) {
+            if (batch.get().active) {
+                return "true"
+            } else {
+                return "false"
+            }
+        }
+        throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
+    }
+
+    @PostMapping("{batchId}/restarted")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun postBatchRestarted(@PathVariable batchId: String) {
+        val batch = batchRepository.findById(UUID.fromString(batchId))
+        if (batch.isPresent) {
+            val batchObject = batch.get();
+            batchObject.numberOfRestarts = batchObject.numberOfRestarts + 1;
+            batchRepository.save(batchObject);
             return;
         }
         throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");

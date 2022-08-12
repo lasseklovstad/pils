@@ -35,4 +35,16 @@ class BatchController {
         }
         throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
     }
+
+    @PostMapping("{id}/notactive")
+    fun postBatchActive(@PathVariable id:String): BatchDetailed {
+        val batch = batchRepository.findById(UUID.fromString(id))
+        if (batch.isPresent) {
+            val batchObject = batch.get();
+            batchObject.active = false;
+            val newBatch = batchRepository.save(batchObject);
+            return BatchDetailed(newBatch);
+        }
+        throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
+    }
 }
