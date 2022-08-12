@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import java.util.Calendar
+import java.util.Date
 import java.util.UUID
 import javax.websocket.server.PathParam
 
@@ -29,6 +31,9 @@ class MicroController {
             val temperatureValue = body.toFloat()
             val temp = Temperature(temperatureValue, batch.get())
             temperatureRepository.save(temp)
+            val yesterday = Calendar.getInstance()
+            yesterday.add(Calendar.HOUR,-12)
+            temperatureRepository.deleteByDateBefore(yesterday.time)
             return;
         }
         throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
