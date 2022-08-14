@@ -6,6 +6,7 @@ import no.web.pils.repository.BatchRepository
 import no.web.pils.repository.TemperatureRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.Calendar
@@ -24,19 +25,24 @@ class MicroController {
     lateinit var batchRepository: BatchRepository
 
     @PostMapping("{batchId}/temperature")
+    @Transactional
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun postColdTemperatur(@RequestBody body: String, @PathVariable batchId: String) {
         val batch = batchRepository.findById(UUID.fromString(batchId))
         if (batch.isPresent) {
+            cleanTemperatureData();
             val temperatureValue = body.toFloat()
             val temp = Temperature(temperatureValue, batch.get())
             temperatureRepository.save(temp)
-            val yesterday = Calendar.getInstance()
-            yesterday.add(Calendar.HOUR,-12)
-            temperatureRepository.deleteByDateBefore(yesterday.time)
             return;
         }
         throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
+    }
+
+    fun cleanTemperatureData(){
+        val yesterday = Calendar.getInstance()
+        yesterday.add(Calendar.HOUR,-12)
+        temperatureRepository.deleteByDateBefore(yesterday.time)
     }
 
     @GetMapping("{batchId}/active")

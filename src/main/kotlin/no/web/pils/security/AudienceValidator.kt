@@ -1,4 +1,4 @@
-package no.gata.web.security
+package no.web.pils.security
 
 import org.springframework.security.oauth2.core.OAuth2Error
 import org.springframework.security.oauth2.core.OAuth2TokenValidator

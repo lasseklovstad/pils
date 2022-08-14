@@ -3,9 +3,13 @@ package no.web.pils.controller
 import no.web.pils.controller.dtoOut.BatchDetailed
 import no.web.pils.controller.dtoOut.BatchSimple
 import no.web.pils.model.Batch
+import no.web.pils.model.Temperature
 import no.web.pils.repository.BatchRepository
+import no.web.pils.repository.TemperatureRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.UUID
@@ -16,6 +20,9 @@ class BatchController {
 
     @Autowired
     lateinit var batchRepository: BatchRepository
+
+    @Autowired
+    lateinit var temperatureRepository: TemperatureRepository
 
     @GetMapping
     fun getBatches(): List<BatchSimple> {
@@ -36,7 +43,17 @@ class BatchController {
         throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
     }
 
+    @GetMapping("{id}/temperature")
+    fun getBatchTemperatures(@PathVariable id:String): List<Temperature> {
+        val batch = batchRepository.findById(UUID.fromString(id));
+        if(batch.isPresent){
+            return temperatureRepository.findAllByBatch(batch.get())
+        }
+        throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
+    }
+
     @PostMapping("{id}/notactive")
+    @PreAuthorize("hasAuthority('pilsadmin')")
     fun postBatchActive(@PathVariable id:String): BatchDetailed {
         val batch = batchRepository.findById(UUID.fromString(id))
         if (batch.isPresent) {
