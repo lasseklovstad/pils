@@ -1,4 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useAuth0} from "@auth0/auth0-react";
 
 export interface IBatch {
     id: string
@@ -12,9 +13,9 @@ export interface IBatchDetailed {
     name: string
     controllerTemperature: number
     createdDate: string
-    temperatureData: ITemperature[]
     active: boolean;
     numberOfRestarts: number;
+    numberOfReadings: number;
 }
 
 export interface ITemperature {
@@ -24,24 +25,58 @@ export interface ITemperature {
 }
 
 export const useGetBatches = () => {
-    return useQuery<IBatch[]>(["batches"], () => fetch("/api/batch").then(r => r.json()))
+    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+
+    const startFetch = async () => {
+        const token = await getAccessTokenSilently();
+        return fetch(`/api/batch`, {headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
+    }
+    return useQuery<IBatch[]>(["batches", isAuthenticated], startFetch)
 }
 
 export const useGetBatch = (batchId: string) => {
-    return useQuery<IBatchDetailed>(["batch", batchId], () =>
-        fetch(`/api/batch/${batchId}`).then(r => r.json()), {refetchInterval: 10000})
+    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+
+    const startFetch = async () => {
+        const token = await getAccessTokenSilently();
+        return fetch(`/api/batch/${batchId}`, {headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
+    }
+
+    return useQuery<IBatchDetailed>(["batch", batchId, isAuthenticated], startFetch, {refetchInterval: 10000})
+}
+
+export const useGetBatchTemperatures = (batchId: string) => {
+    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+
+    const startFetch = async () => {
+        const token = await getAccessTokenSilently();
+        return fetch(`/api/batch/${batchId}/temperature`, {headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
+    }
+
+    return useQuery<ITemperature[]>(["batch-temperature", batchId, isAuthenticated], startFetch, {refetchInterval: 10000})
 }
 
 export const usePostBatchNotActive = (batchId: string) => {
+    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+
+    const startFetch = async () => {
+        const token = await getAccessTokenSilently();
+        return fetch(`/api/batch/${batchId}/notactive`, {method: "POST", headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
+    }
     const queryClient = useQueryClient();
-    return useMutation<IBatchDetailed>(["batch", batchId], () =>
-        fetch(`/api/batch/${batchId}/notactive`, {method: "POST"}).then(r => r.json()), {
+    return useMutation<IBatchDetailed>(["batch", batchId, isAuthenticated], startFetch, {
         onSuccess: (data) => {
-            queryClient.setQueriesData(["batch", batchId], () => data)
+            queryClient.setQueriesData(["batch", batchId, isAuthenticated], () => data)
         }
     })
 }
 
 export const useGetDatabaseSize = () => {
-    return useQuery<string>(["databasesize"], () => fetch("/api/batch/databasesize").then(r => r.text()))
+    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+
+    const startFetch = async () => {
+        const token = await getAccessTokenSilently();
+        return fetch(`/api/batch/databasesize`, {headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
+    }
+    return useQuery<string>(["databasesize", isAuthenticated], startFetch)
 }

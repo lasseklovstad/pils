@@ -1,18 +1,45 @@
 import {useParams} from "react-router-dom";
-import {useGetBatch} from "../api/batch.api";
+import {useGetBatch, useGetBatchTemperatures} from "../api/batch.api";
 import {Batch} from "./Batch";
+import {BatchTemperatureChart} from "./BatchTemperatureChart";
+import {Text} from "./Text";
 
 export const BatchPage = () => {
     const {batchId} = useParams()
-    const {data, isLoading, isError, isSuccess} = useGetBatch(batchId!)
+    const getBatch = useGetBatch(batchId!)
+    const getBatchTemperatures = useGetBatchTemperatures(batchId!)
 
-    if (isLoading) {
-        return <div>Loading...</div>
+    const renderBatch = ()=>{
+        const {isLoading, isError, isSuccess, data} = getBatch
+        if (isLoading) {
+            return <Text>Henter batch...</Text>
+        }
+
+        if (isError || !isSuccess) {
+            return <Text>Noe gikk galt ved henting av batch</Text>
+        }
+        return <Batch batch={data}/>
     }
 
-    if (isError || !isSuccess) {
-        return <div>Noe gikk galt</div>
+    const renderBatchTemperature = ()=>{
+        const {isLoading, isError, isSuccess, data} = getBatchTemperatures
+        if (isLoading) {
+            return <Text>Henter temperaturer...</Text>
+        }
+
+        if (isError || !isSuccess) {
+            return <Text>Noe gikk galt ved henting av temperaturer</Text>
+        }
+
+        if(data.length === 0){
+            <Text>Ingen målinger enda!</Text>
+        }
+
+        return <BatchTemperatureChart temperatures={data}/>
     }
 
-    return <Batch batch={data}/>
+    return <>
+        {renderBatch()}
+        {renderBatchTemperature()}
+    </>
 };
