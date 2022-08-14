@@ -7,7 +7,7 @@ import {useEffect} from "react";
 export const Header = () => {
     const {isAuthenticated, loginWithRedirect, logout, user} = useAuth0()
     return <header className={"bg-amber-100 shadow-md flex justify-center"}>
-        <div className="flex justify-between items-center w-full max-w-2xl mx-auto p-2">
+        <div className="flex justify-between items-center w-full max-w-4xl mx-auto p-2">
             <Link to="">
                 <Text variant="h1" className="mr-1" as="h1">Pils</Text>
             </Link>

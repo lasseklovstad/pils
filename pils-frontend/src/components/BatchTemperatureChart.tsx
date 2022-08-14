@@ -27,7 +27,7 @@ export const BatchTemperatureChart = ({temperatures}: BatchTemperatureChartProps
                 <XAxis type={"number"} dataKey="dateValue"/>
                 <YAxis  type={"number"} allowDecimals domain={['dataMin', 'dataMax']}  orientation={"right"} />
                 <Tooltip/>
-                <Line type="monotone" dataKey="temp" stroke="#82ca9d" strokeWidth={3} dot={false}/>
+                <Line type="linear" dataKey="temp" stroke="#82ca9d" strokeWidth={3} dot={false}/>
             </LineChart>
         </ResponsiveContainer>
     </div>
