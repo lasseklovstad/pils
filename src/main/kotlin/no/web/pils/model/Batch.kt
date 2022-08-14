@@ -13,7 +13,6 @@ class Batch(
     var name: String,
     @OneToMany(mappedBy = "batch")
     @JsonIgnore
-    @OrderBy("date ASC")
     var temperatureData: List<Temperature>,
     var controllerTemperature: Float,
     var createdDate: Date,

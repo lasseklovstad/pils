@@ -9,7 +9,6 @@ class Temperature(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: UUID?,
-    @OrderBy
     var date: Date,
     var temperature: Float,
     @ManyToOne

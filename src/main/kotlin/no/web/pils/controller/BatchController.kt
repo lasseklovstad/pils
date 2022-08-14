@@ -7,6 +7,7 @@ import no.web.pils.model.Temperature
 import no.web.pils.repository.BatchRepository
 import no.web.pils.repository.TemperatureRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -47,7 +48,7 @@ class BatchController {
     fun getBatchTemperatures(@PathVariable id:String): List<Temperature> {
         val batch = batchRepository.findById(UUID.fromString(id));
         if(batch.isPresent){
-            return temperatureRepository.findAllByBatch(batch.get())
+            return temperatureRepository.findAllByBatchOrderByDateDesc(batch.get());
         }
         throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
     }
