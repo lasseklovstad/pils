@@ -5,13 +5,13 @@ import {
     XAxis,
     CartesianGrid,
     Tooltip,
-    Legend,
     Line,
-    YAxis,
-    BarChart,
-    Bar
+    YAxis
 } from "recharts";
 import {Button} from "./Button";
+import {Text} from "./Text";
+import {Input} from "./Input";
+import {useState} from "react";
 
 type BatchProps = {
     batch: IBatchDetailed
@@ -23,14 +23,30 @@ export const Batch = ({batch}: BatchProps) => {
         date: batch.date
     })).filter(dataPoint => dataPoint.temp > -50 && dataPoint.temp < 80)
     const {mutate} = usePostBatchNotActive(batch.id)
+    const [batchName, setBatchName] = useState(batch.name)
+    const [temp, setTemp] = useState(batch.controllerTemperature.toString())
+
+
     return <div>
+
+        <div className="flex items-start justify-between flex-wrap">
+            <div>
+                <Input label="Navn" placeholder="Hva skal pilsen din hete?" value={batchName} onChange={setBatchName}/>
+                <Input type="number" label="Temperatur °C" placeholder="Hva skal pilsen din hete?" value={temp} onChange={setTemp}/>
+            </div>
+            <div>
+                <Text variant="h2" as={"h2"} className="font-medium mb-1">Detaljer</Text>
+                <Text><span className="font-medium">Antall målinger:</span> {batch.temperatureData.length}</Text>
+                <Text><span className="font-medium">Antall restarter:</span> {batch.numberOfRestarts}</Text>
+            </div>
+            <Button onClick={() => mutate()}>{batch.active ? "Deaktiver" : "Aktiver"}</Button>
+        </div>
         <div className="md:h-[600px] sm:h-[400px] p-2">
             <ResponsiveContainer>
                 <LineChart
                     data={data}
                     margin={{
                         top: 5,
-                        right: 30,
                         bottom: 5,
                     }}
                 >
@@ -44,15 +60,6 @@ export const Batch = ({batch}: BatchProps) => {
                     <Line type="monotone" dataKey="temp" stroke="#82ca9d" strokeWidth={3} dot={false}/>
                 </LineChart>
             </ResponsiveContainer>
-            <div>
-                <div>Id: {batch.id}</div>
-                <div>Navn: {batch.name}</div>
-                <div>Kontroller temperatur: {batch.controllerTemperature} C</div>
-                <div>Antall målinger: {batch.temperatureData.length}</div>
-                <div>Antall restarter: {batch.numberOfRestarts}</div>
-                <div>{batch.active ? "Batch er aktiv" : "Batch er inaktiv"}</div>
-                <Button onClick={() => mutate()}>Sett inaktive</Button>
-            </div>
         </div>
     </div>;
 };
