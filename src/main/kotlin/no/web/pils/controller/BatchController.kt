@@ -2,6 +2,7 @@ package no.web.pils.controller
 
 import no.web.pils.controller.dtoOut.BatchDetailed
 import no.web.pils.controller.dtoOut.BatchSimple
+import no.web.pils.controller.dtoOut.BatchUpdate
 import no.web.pils.model.Batch
 import no.web.pils.model.Temperature
 import no.web.pils.repository.BatchRepository
@@ -44,6 +45,30 @@ class BatchController {
         throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
     }
 
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteBatch(@PathVariable id:String) {
+        val batch = batchRepository.findById(UUID.fromString(id));
+        if(batch.isPresent){
+            batchRepository.delete(batch.get())
+            return;
+        }
+        throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
+    }
+
+    @PutMapping("{id}")
+    fun putBatch(@PathVariable id:String, @RequestBody body:BatchUpdate): BatchDetailed {
+        val batch = batchRepository.findById(UUID.fromString(id));
+        if(batch.isPresent){
+            val newBatch = batch.get();
+            newBatch.name = body.name
+            newBatch.controllerTemperature = body.controllerTemperature
+            batchRepository.save(newBatch);
+            return BatchDetailed(newBatch)
+        }
+        throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
+    }
+
     @GetMapping("{id}/temperature")
     fun getBatchTemperatures(@PathVariable id:String): List<Temperature> {
         val batch = batchRepository.findById(UUID.fromString(id));
@@ -53,13 +78,13 @@ class BatchController {
         throw ResponseStatusException(HttpStatus.NOT_FOUND, "Batch finnes ikke!");
     }
 
-    @PostMapping("{id}/notactive")
+    @PostMapping("{id}/active")
     @PreAuthorize("hasAuthority('pilsadmin')")
     fun postBatchActive(@PathVariable id:String): BatchDetailed {
         val batch = batchRepository.findById(UUID.fromString(id))
         if (batch.isPresent) {
             val batchObject = batch.get();
-            batchObject.active = false;
+            batchObject.active = !batchObject.active;
             val newBatch = batchRepository.save(batchObject);
             return BatchDetailed(newBatch);
         }

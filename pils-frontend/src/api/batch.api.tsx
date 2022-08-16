@@ -8,6 +8,11 @@ export interface IBatch {
     createdDate: string
 }
 
+export interface IBatchUpdate {
+    name: string
+    controllerTemperature: number
+}
+
 export interface IBatchDetailed {
     id: string
     name: string
@@ -61,14 +66,49 @@ export const usePostBatchNotActive = (batchId: string) => {
 
     const startFetch = async () => {
         const token = await getAccessTokenSilently();
-        return fetch(`/api/batch/${batchId}/notactive`, {method: "POST", headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
+        return fetch(`/api/batch/${batchId}/active`, {
+            method: "POST",
+            headers: {"Authorization": `Bearer ${token}`}
+        }).then(r => r.json())
     }
     const queryClient = useQueryClient();
-    return useMutation<IBatchDetailed>(["batch", batchId, isAuthenticated], startFetch, {
+    return useMutation<IBatchDetailed>(["batch-active", batchId, isAuthenticated], startFetch, {
         onSuccess: (data) => {
             queryClient.setQueriesData(["batch", batchId, isAuthenticated], () => data)
         }
     })
+}
+
+export const usePutBatch = (batchId: string) => {
+    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+
+    const startFetch = async (body: IBatchUpdate) => {
+        const token = await getAccessTokenSilently();
+        return fetch(`/api/batch/${batchId}`, {
+            body: JSON.stringify(body),
+            method: "PUT",
+            headers: {"Authorization": `Bearer ${token}`, "Content-type": "application/json"}
+        }).then(r => r.json())
+    }
+    const queryClient = useQueryClient();
+    return useMutation<IBatchDetailed, unknown, IBatchUpdate>(["batch-update", batchId, isAuthenticated], startFetch, {
+        onSuccess: (data) => {
+            queryClient.setQueriesData(["batch", batchId, isAuthenticated], () => data)
+        }
+    })
+}
+
+export const useDeleteBatch = (batchId: string) => {
+    const {getAccessTokenSilently} = useAuth0();
+
+    const startFetch = async () => {
+        const token = await getAccessTokenSilently();
+        return fetch(`/api/batch/${batchId}`, {
+            method: "DELETE",
+            headers: {"Authorization": `Bearer ${token}`}
+        })
+    }
+    return useMutation(startFetch)
 }
 
 export const useGetDatabaseSize = () => {

@@ -11,7 +11,7 @@ class Batch(
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: UUID?,
     var name: String,
-    @OneToMany(mappedBy = "batch")
+    @OneToMany(mappedBy = "batch", cascade = [CascadeType.ALL])
     @JsonIgnore
     var temperatureData: List<Temperature>,
     var controllerTemperature: Float,
