@@ -1,7 +1,6 @@
 package no.web.pils.controller.dtoOut
 
-import no.web.pils.model.Batch
-import no.web.pils.model.Temperature
+import no.web.pils.model.*
 import java.util.*
 
 class BatchDetailed(
@@ -11,7 +10,9 @@ class BatchDetailed(
     var controllerTemperature: Float,
     var active: Boolean,
     var numberOfRestarts: Int,
-    var numberOfReadings: Int
+    var numberOfReadings: Int,
+    var microControllerId: UUID?,
+    var batchType: BatchType
 ) {
     constructor(batch: Batch) : this(
         batch.id,
@@ -20,6 +21,8 @@ class BatchDetailed(
         batch.controllerTemperature,
         batch.active,
         batch.numberOfRestarts,
-        batch.temperatureData.size
+        batch.temperatureData.toTemperatureArray().size,
+        batch.microController?.id,
+        batch.batchType
     )
 }

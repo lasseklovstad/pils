@@ -11,6 +11,8 @@ export interface IBatch {
 export interface IBatchUpdate {
     name: string
     controllerTemperature: number
+    microControllerId: string | null
+    batchType: string
 }
 
 export interface IBatchDetailed {
@@ -21,12 +23,18 @@ export interface IBatchDetailed {
     active: boolean;
     numberOfRestarts: number;
     numberOfReadings: number;
+    microControllerId: string | null;
+    batchType: "WARM" | "COLD"
 }
 
 export interface ITemperature {
-    date: string
-    id: string
+    date: number
     temperature: number
+}
+
+export interface IMicroController {
+    id: string
+    name: string
 }
 
 export const useGetBatches = () => {
@@ -48,6 +56,17 @@ export const useGetBatch = (batchId: string) => {
     }
 
     return useQuery<IBatchDetailed>(["batch", batchId, isAuthenticated], startFetch, {refetchInterval: 10000})
+}
+
+export const useGetControllers = () => {
+    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+
+    const startFetch = async () => {
+        const token = await getAccessTokenSilently();
+        return fetch(`/api/batch/controller`, {headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
+    }
+
+    return useQuery<IMicroController[]>(["controller", isAuthenticated], startFetch)
 }
 
 export const useGetBatchTemperatures = (batchId: string) => {
@@ -96,6 +115,19 @@ export const usePutBatch = (batchId: string) => {
             queryClient.setQueriesData(["batch", batchId, isAuthenticated], () => data)
         }
     })
+}
+
+export const usePostBatch = () => {
+    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+
+    const startFetch = async () => {
+        const token = await getAccessTokenSilently();
+        return fetch(`/api/batch`, {
+            method: "POST",
+            headers: {"Authorization": `Bearer ${token}`, "Content-type": "application/json"}
+        }).then(r => r.json())
+    }
+    return useMutation<IBatchDetailed>(["batch-create", isAuthenticated], startFetch)
 }
 
 export const useDeleteBatch = (batchId: string) => {
