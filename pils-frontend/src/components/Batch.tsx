@@ -1,4 +1,4 @@
-import {IBatchDetailed, useDeleteBatch, usePostBatchNotActive, usePutBatch} from "../api/batch.api";
+import {IBatchDetailed, useDeleteBatch, useGetControllers, usePostBatchNotActive, usePutBatch} from "../api/batch.api";
 import {
     ResponsiveContainer,
     LineChart,
@@ -13,6 +13,7 @@ import {Text} from "./Text";
 import {Input} from "./Input";
 import {FormEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {Select} from "./Select";
 
 type BatchProps = {
     batch: IBatchDetailed
@@ -24,13 +25,18 @@ export const Batch = ({batch}: BatchProps) => {
     const {mutate: mutateBatch} = usePutBatch(batch.id)
     const {mutate: deleteBatch} = useDeleteBatch(batch.id)
     const [batchName, setBatchName] = useState(batch.name)
+    const controller = useGetControllers()
     const [temp, setTemp] = useState(batch.controllerTemperature.toString())
+    const [selectedController, setSelectedController] = useState(batch.microControllerId)
+    const [selectedType, setSelectedType] = useState(batch.batchType as string)
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         mutateBatch({
             name: batchName,
-            controllerTemperature: parseFloat(temp)
+            controllerTemperature: parseFloat(temp),
+            microControllerId: selectedController,
+            batchType: selectedType
         })
     }
 
@@ -40,6 +46,12 @@ export const Batch = ({batch}: BatchProps) => {
                 <Input label="Navn" placeholder="Hva skal pilsen din hete?" value={batchName} onChange={setBatchName}/>
                 <Input type="number" label="Temperatur °C" placeholder="Hva skal pilsen din hete?" value={temp}
                        onChange={setTemp}/>
+                <Select label={"Velg kontroller"}
+                        options={controller.data?.map(c => ({label: c.name, value: c.id})) || []}
+                        value={selectedController} onChange={setSelectedController}/>
+                <Select label={"Velg batchtype"}
+                        options={[{value: "WARM", label: "Varm"}, {value: "COLD", label: "Kald"}]}
+                        value={selectedType} onChange={setSelectedType} emptyOption={false}/>
                 <Button type="submit">Lagre</Button>
             </form>
             <div>
