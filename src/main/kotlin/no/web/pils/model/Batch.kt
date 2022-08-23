@@ -12,6 +12,7 @@ class Batch(
     var id: UUID?,
     var name: String,
     @JsonIgnore
+    @Column(columnDefinition="TEXT")
     var temperatureData: String,
     var controllerTemperature: Float,
     var createdDate: Date,
