@@ -38,50 +38,50 @@ export interface IMicroController {
 }
 
 export const useGetBatches = () => {
-    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+    const {getAccessTokenSilently} = useAuth0();
 
     const startFetch = async () => {
         const token = await getAccessTokenSilently();
         return fetch(`/api/batch`, {headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
     }
-    return useQuery<IBatch[]>(["batches", isAuthenticated], startFetch)
+    return useQuery<IBatch[]>(["batches"], startFetch)
 }
 
 export const useGetBatch = (batchId: string) => {
-    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+    const {getAccessTokenSilently} = useAuth0();
 
     const startFetch = async () => {
         const token = await getAccessTokenSilently();
         return fetch(`/api/batch/${batchId}`, {headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
     }
 
-    return useQuery<IBatchDetailed>(["batch", batchId, isAuthenticated], startFetch, {refetchInterval: 10000})
+    return useQuery<IBatchDetailed>(["batch", batchId], startFetch, {refetchInterval: 10000})
 }
 
 export const useGetControllers = () => {
-    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+    const {getAccessTokenSilently} = useAuth0();
 
     const startFetch = async () => {
         const token = await getAccessTokenSilently();
         return fetch(`/api/batch/controller`, {headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
     }
 
-    return useQuery<IMicroController[]>(["controller", isAuthenticated], startFetch)
+    return useQuery<IMicroController[]>(["controller"], startFetch)
 }
 
 export const useGetBatchTemperatures = (batchId: string) => {
-    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+    const {getAccessTokenSilently} = useAuth0();
 
     const startFetch = async () => {
         const token = await getAccessTokenSilently();
         return fetch(`/api/batch/${batchId}/temperature`, {headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
     }
 
-    return useQuery<ITemperature[]>(["batch-temperature", batchId, isAuthenticated], startFetch, {refetchInterval: 10000})
+    return useQuery<ITemperature[]>(["batch-temperature", batchId], startFetch, {refetchInterval: 10000})
 }
 
 export const usePostBatchNotActive = (batchId: string) => {
-    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+    const {getAccessTokenSilently} = useAuth0();
 
     const startFetch = async () => {
         const token = await getAccessTokenSilently();
@@ -91,15 +91,15 @@ export const usePostBatchNotActive = (batchId: string) => {
         }).then(r => r.json())
     }
     const queryClient = useQueryClient();
-    return useMutation<IBatchDetailed>(["batch-active", batchId, isAuthenticated], startFetch, {
+    return useMutation<IBatchDetailed>(["batch-active", batchId], startFetch, {
         onSuccess: (data) => {
-            queryClient.setQueriesData(["batch", batchId, isAuthenticated], () => data)
+            queryClient.setQueriesData(["batch", batchId], () => data)
         }
     })
 }
 
 export const usePutBatch = (batchId: string) => {
-    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+    const {getAccessTokenSilently} = useAuth0();
 
     const startFetch = async (body: IBatchUpdate) => {
         const token = await getAccessTokenSilently();
@@ -110,15 +110,15 @@ export const usePutBatch = (batchId: string) => {
         }).then(r => r.json())
     }
     const queryClient = useQueryClient();
-    return useMutation<IBatchDetailed, unknown, IBatchUpdate>(["batch-update", batchId, isAuthenticated], startFetch, {
+    return useMutation<IBatchDetailed, unknown, IBatchUpdate>(["batch-update", batchId], startFetch, {
         onSuccess: (data) => {
-            queryClient.setQueriesData(["batch", batchId, isAuthenticated], () => data)
+            queryClient.setQueriesData(["batch", batchId], () => data)
         }
     })
 }
 
 export const usePostBatch = () => {
-    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+    const {getAccessTokenSilently} = useAuth0();
 
     const startFetch = async () => {
         const token = await getAccessTokenSilently();
@@ -127,7 +127,7 @@ export const usePostBatch = () => {
             headers: {"Authorization": `Bearer ${token}`, "Content-type": "application/json"}
         }).then(r => r.json())
     }
-    return useMutation<IBatchDetailed>(["batch-create", isAuthenticated], startFetch)
+    return useMutation<IBatchDetailed>(["batch-create"], startFetch)
 }
 
 export const useDeleteBatch = (batchId: string) => {
@@ -144,11 +144,11 @@ export const useDeleteBatch = (batchId: string) => {
 }
 
 export const useGetDatabaseSize = () => {
-    const {getAccessTokenSilently, isAuthenticated} = useAuth0();
+    const {getAccessTokenSilently} = useAuth0();
 
     const startFetch = async () => {
         const token = await getAccessTokenSilently();
         return fetch(`/api/batch/databasesize`, {headers: {"Authorization": `Bearer ${token}`}}).then(r => r.json())
     }
-    return useQuery<string>(["databasesize", isAuthenticated], startFetch)
+    return useQuery<string>(["databasesize"], startFetch)
 }

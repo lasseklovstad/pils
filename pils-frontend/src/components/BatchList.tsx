@@ -2,6 +2,7 @@ import {useGetBatches, usePostBatch} from "../api/batch.api";
 import {Link, useNavigate} from "react-router-dom";
 import {DatabaseSize} from "./DatabaseSize";
 import {Button} from "./Button";
+import {Spinner} from "./Spinner";
 
 export const BatchList = () => {
     const {isLoading, isError, isSuccess, data} = useGetBatches()
@@ -9,7 +10,7 @@ export const BatchList = () => {
     const navigate = useNavigate()
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return <Spinner />
     }
 
     if (isError || !isSuccess) {

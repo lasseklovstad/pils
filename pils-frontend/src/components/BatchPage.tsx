@@ -3,6 +3,7 @@ import {useGetBatch, useGetBatchTemperatures} from "../api/batch.api";
 import {Batch} from "./Batch";
 import {BatchTemperatureChart} from "./BatchTemperatureChart";
 import {Text} from "./Text";
+import {Spinner} from "./Spinner";
 
 export const BatchPage = () => {
     const {batchId} = useParams()
@@ -12,7 +13,7 @@ export const BatchPage = () => {
     const renderBatch = ()=>{
         const {isLoading, isError, isSuccess, data} = getBatch
         if (isLoading) {
-            return <Text>Henter batch...</Text>
+            return <Spinner text="Henter batch..." />
         }
 
         if (isError || !isSuccess) {
@@ -24,15 +25,11 @@ export const BatchPage = () => {
     const renderBatchTemperature = ()=>{
         const {isLoading, isError, isSuccess, data} = getBatchTemperatures
         if (isLoading) {
-            return <Text>Henter temperaturer...</Text>
+            return <Spinner text="Henter temperaturer.." />
         }
 
         if (isError || !isSuccess) {
             return <Text>Noe gikk galt ved henting av temperaturer</Text>
-        }
-
-        if(data.length === 0){
-            <Text>Ingen målinger enda!</Text>
         }
 
         return <BatchTemperatureChart temperatures={data}/>

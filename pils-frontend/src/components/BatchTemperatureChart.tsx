@@ -1,5 +1,6 @@
 import {ITemperature} from "../api/batch.api";
 import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import {Text} from "./Text";
 
 type BatchTemperatureChartProps = {
     temperatures: ITemperature[]
@@ -13,6 +14,11 @@ export const BatchTemperatureChart = ({temperatures}: BatchTemperatureChartProps
     })).filter(dataPoint => dataPoint.temp > -50 && dataPoint.temp < 80).sort(function(a, b) {
         return a.dateValue - b.dateValue;
     })
+
+    if(data.length ===0){
+        return <Text>Ingen målinger enda!</Text>
+    }
+
     return <div className="md:h-[600px] h-[400px] p-2">
         <ResponsiveContainer>
             <LineChart

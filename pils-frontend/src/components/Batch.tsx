@@ -22,7 +22,7 @@ type BatchProps = {
 export const Batch = ({batch}: BatchProps) => {
     const navigate = useNavigate()
     const {mutate} = usePostBatchNotActive(batch.id)
-    const {mutate: mutateBatch} = usePutBatch(batch.id)
+    const {mutate: mutateBatch, isLoading: isLoadingBatch} = usePutBatch(batch.id)
     const {mutate: deleteBatch} = useDeleteBatch(batch.id)
     const [batchName, setBatchName] = useState(batch.name)
     const controller = useGetControllers()
@@ -42,7 +42,7 @@ export const Batch = ({batch}: BatchProps) => {
 
     return <>
         <div className="flex items-start justify-between flex-wrap">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className=" mb-2">
                 <Input label="Navn" placeholder="Hva skal pilsen din hete?" value={batchName} onChange={setBatchName}/>
                 <Input type="number" label="Temperatur °C" placeholder="Hva skal pilsen din hete?" value={temp}
                        onChange={setTemp}/>
@@ -52,7 +52,7 @@ export const Batch = ({batch}: BatchProps) => {
                 <Select label={"Velg batchtype"}
                         options={[{value: "WARM", label: "Varm"}, {value: "COLD", label: "Kald"}]}
                         value={selectedType} onChange={setSelectedType} emptyOption={false}/>
-                <Button type="submit">Lagre</Button>
+                <Button type="submit" loading={isLoadingBatch}>Lagre</Button>
             </form>
             <div>
                 <Text variant="h2" as={"h2"} className="font-medium mb-1">Detaljer</Text>
