@@ -9,4 +9,7 @@ install heroku cli and run
 heroku login
 heroku git:remote -a pilscontroller
 git push heroku
+
+git 
+git push dokku main:master
 ````

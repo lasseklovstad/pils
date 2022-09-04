@@ -6,6 +6,6 @@ COPY pom.xml /usr/src/app
 RUN mvn -f /usr/src/app/pom.xml clean package -DskipTests
 
 FROM gcr.io/distroless/java17-debian11
-COPY --from=build /usr/src/app/target/pils-0.0.2-SNAPSHOT.jar /usr/app/pils-0.0.2-SNAPSHOT.jar
+COPY --from=build /usr/src/app/target/pils-0.0.1-SNAPSHOT.jar /usr/app/pils-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/usr/app/pils-0.0.2-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","/usr/app/pils-0.0.1-SNAPSHOT.jar"]
