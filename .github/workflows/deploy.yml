@@ -19,34 +19,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: 'npm'
-          cache-dependency-path: 'pils-frontend/package-lock.json'
-
-      - name: Build frontend
-        working-directory: ./pils-frontend
-        run: |
-          npm install
-          npm run build
-
-      - name: Copy frontend
-        run: cp -R pils-frontend/dist src/main/resources/static
-
-
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'maven'
-      - name: Build with Maven
-        run: mvn clean package -DskipTests --file pom.xml
-
-      - name: Show tree
-        run: tree
-
-
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v2
 
@@ -54,6 +26,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           push: true
           tags: lassekl/pils:${{ github.sha }}
 
