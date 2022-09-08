@@ -25,7 +25,7 @@ jobs:
           cache: 'npm'
 
       - name: Build frontend
-        working-directory: ./autotester
+        working-directory: ./pils-frontend
         run: |
           npm install
           npm run build
