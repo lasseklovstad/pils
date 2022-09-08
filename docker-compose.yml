@@ -17,10 +17,6 @@ services:
 
   app:
     image: ${DOCKER_REGISTRY-}app
-    deploy:
-      resources:
-        limits:
-          memory: 72M
     depends_on:
       - db
     environment:
