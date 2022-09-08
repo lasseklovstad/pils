@@ -23,9 +23,15 @@ jobs:
         with:
           node-version: 16
           cache: 'npm'
-      - run: npm install
-      - run: npm run build
-      - run: cp -R pils-frontend/dist src/main/resources/static
+
+      - name: Build frontend
+        working-directory: ./autotester
+        run: |
+          npm install
+          npm run build
+
+      - name: Copy frontend
+        run: cp -R pils-frontend/dist src/main/resources/static
 
 
       - uses: actions/setup-java@v3
