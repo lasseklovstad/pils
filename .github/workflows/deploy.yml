@@ -24,7 +24,10 @@ jobs:
           node-version: 16
           cache: 'npm'
           cache-dependency-path: 'pils-frontend/package-lock.json'
-      - run: |
+
+      - name: Build frontend
+        working-directory: ./pils-frontend
+        run: |
           npm install
           npm run build
 
