@@ -21,9 +21,7 @@ WORKDIR application
 COPY --from=build-backend $HOME/target/*.jar app.jar
 RUN java -Djarmode=layertools -jar app.jar extract
 
-FROM openjdk:17-jdk-alpine
-RUN addgroup -S pilsuser && adduser -S pilsuser -G pilsuser
-USER pilsuser
+FROM gcr.io/distroless/java17-debian11
 WORKDIR application
 COPY --from=stage application/dependencies/ ./
 COPY --from=stage application/spring-boot-loader/ ./

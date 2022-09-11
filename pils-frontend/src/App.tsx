@@ -16,7 +16,7 @@ function App() {
     if(!isAuthenticated){
         return <div className="flex items-center justify-center h-[500px]">
             <div className="flex justify-center items-center flex-col p-2 h-[200px]">
-                <Text variant="h2" as="h1" className="mb-2">Velkommen til Pils1!</Text>
+                <Text variant="h2" as="h1" className="mb-2">Velkommen til Pils!</Text>
                 <Button onClick={() => loginWithRedirect()}>Logg inn</Button>
             </div>
         </div>
